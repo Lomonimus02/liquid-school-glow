@@ -10,7 +10,7 @@ const StepIndicator = ({ steps, currentStep, onStepClick }: StepIndicatorProps) 
   return (
     <div className="relative">
       {/* Progress line */}
-      <div className="absolute left-8 top-8 w-0.5 h-full bg-glass-border">
+      <div className="absolute left-8 top-8 w-0.5 bg-glass-border z-0" style={{ height: 'calc(100% - 200px)' }}>
         <div 
           className="w-full bg-stellar-accent transition-all duration-1000 ease-out"
           style={{ height: `${(currentStep / (steps.length - 1)) * 100}%` }}
@@ -33,7 +33,7 @@ const StepIndicator = ({ steps, currentStep, onStepClick }: StepIndicatorProps) 
               onClick={() => onStepClick(index)}
             >
               {/* Step icon */}
-              <div className={`w-16 h-16 rounded-3xl flex items-center justify-center transition-all duration-300 ${
+              <div className={`w-16 h-16 rounded-3xl flex items-center justify-center transition-all duration-300 relative z-10 ${
                 isActive 
                   ? 'bg-stellar-primary/50 ring-2 ring-stellar-accent shadow-lg shadow-stellar-accent/30' 
                   : isCompleted

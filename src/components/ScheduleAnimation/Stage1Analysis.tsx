@@ -116,15 +116,15 @@ const Stage1Analysis = () => {
 
       {/* Data flow particles */}
       <div className="absolute inset-0 pointer-events-none">
-        {Array.from({ length: 12 }, (_, i) => (
+        {Array.from({ length: 8 }, (_, i) => (
           <div
             key={i}
-            className="absolute w-2 h-2 bg-stellar-accent rounded-full opacity-60 animate-data-flow"
+            className="absolute w-2 h-2 bg-stellar-accent rounded-full opacity-60"
             style={{
-              top: `${Math.random() * 80 + 10}%`,
-              left: `${Math.random() * 80 + 10}%`,
-              animationDelay: `${i * 0.3}s`,
-              animationDuration: '3s'
+              top: `${30 + (i % 4) * 15}%`,
+              left: `${30 + Math.floor(i / 4) * 30}%`,
+              animation: `pulse 2s ease-in-out infinite`,
+              animationDelay: `${i * 0.3}s`
             }}
           />
         ))}

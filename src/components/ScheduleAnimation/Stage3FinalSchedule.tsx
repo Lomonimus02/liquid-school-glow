@@ -20,14 +20,53 @@ const Stage3FinalSchedule = () => {
   });
 
   const scheduleData = [
+    // Monday
     { day: 0, time: 0, subject: "Математика", teacher: "Иванов И.И.", classroom: "205", color: "text-blue-400" },
-    { day: 0, time: 1, subject: "Физика", teacher: "Иванов И.И.", classroom: "301", color: "text-purple-400" },
-    { day: 0, time: 2, subject: "Химия", teacher: "Петрова А.С.", classroom: "102", color: "text-green-400" },
-    { day: 1, time: 0, subject: "История", teacher: "Сидоров В.П.", classroom: "203", color: "text-orange-400" },
-    { day: 1, time: 1, subject: "География", teacher: "Козлова М.Н.", classroom: "204", color: "text-teal-400" },
-    { day: 1, time: 2, subject: "Литература", teacher: "Федоров Д.А.", classroom: "201", color: "text-pink-400" },
-    { day: 2, time: 0, subject: "Биология", teacher: "Петрова А.С.", classroom: "103", color: "text-emerald-400" },
-    { day: 2, time: 1, subject: "Английский", teacher: "Морозова Е.В.", classroom: "206", color: "text-cyan-400" },
+    { day: 0, time: 1, subject: "Физика", teacher: "Петрова А.С.", classroom: "301", color: "text-purple-400" },
+    { day: 0, time: 2, subject: "Химия", teacher: "Сидоров В.П.", classroom: "102", color: "text-green-400" },
+    { day: 0, time: 3, subject: "История", teacher: "Козлова М.Н.", classroom: "203", color: "text-orange-400" },
+    { day: 0, time: 4, subject: "География", teacher: "Федоров Д.А.", classroom: "204", color: "text-teal-400" },
+    { day: 0, time: 5, subject: "Литература", teacher: "Морозова Е.В.", classroom: "201", color: "text-pink-400" },
+    
+    // Tuesday
+    { day: 1, time: 0, subject: "Биология", teacher: "Петрова А.С.", classroom: "103", color: "text-emerald-400" },
+    { day: 1, time: 1, subject: "Английский", teacher: "Морозова Е.В.", classroom: "206", color: "text-cyan-400" },
+    { day: 1, time: 2, subject: "Математика", teacher: "Иванов И.И.", classroom: "205", color: "text-blue-400" },
+    { day: 1, time: 3, subject: "Физика", teacher: "Петрова А.С.", classroom: "301", color: "text-purple-400" },
+    { day: 1, time: 4, subject: "Химия", teacher: "Сидоров В.П.", classroom: "102", color: "text-green-400" },
+    { day: 1, time: 5, subject: "История", teacher: "Козлова М.Н.", classroom: "203", color: "text-orange-400" },
+    
+    // Wednesday
+    { day: 2, time: 0, subject: "География", teacher: "Федоров Д.А.", classroom: "204", color: "text-teal-400" },
+    { day: 2, time: 1, subject: "Литература", teacher: "Морозова Е.В.", classroom: "201", color: "text-pink-400" },
+    { day: 2, time: 2, subject: "Биология", teacher: "Петрова А.С.", classroom: "103", color: "text-emerald-400" },
+    { day: 2, time: 3, subject: "Английский", teacher: "Морозова Е.В.", classroom: "206", color: "text-cyan-400" },
+    { day: 2, time: 4, subject: "Математика", teacher: "Иванов И.И.", classroom: "205", color: "text-blue-400" },
+    { day: 2, time: 5, subject: "Физика", teacher: "Петрова А.С.", classroom: "301", color: "text-purple-400" },
+    
+    // Thursday
+    { day: 3, time: 0, subject: "Химия", teacher: "Сидоров В.П.", classroom: "102", color: "text-green-400" },
+    { day: 3, time: 1, subject: "История", teacher: "Козлова М.Н.", classroom: "203", color: "text-orange-400" },
+    { day: 3, time: 2, subject: "География", teacher: "Федоров Д.А.", classroom: "204", color: "text-teal-400" },
+    { day: 3, time: 3, subject: "Литература", teacher: "Морозова Е.В.", classroom: "201", color: "text-pink-400" },
+    { day: 3, time: 4, subject: "Биология", teacher: "Петрова А.С.", classroom: "103", color: "text-emerald-400" },
+    { day: 3, time: 5, subject: "Английский", teacher: "Морозова Е.В.", classroom: "206", color: "text-cyan-400" },
+    
+    // Friday
+    { day: 4, time: 0, subject: "Математика", teacher: "Иванов И.И.", classroom: "205", color: "text-blue-400" },
+    { day: 4, time: 1, subject: "Физика", teacher: "Петрова А.С.", classroom: "301", color: "text-purple-400" },
+    { day: 4, time: 2, subject: "Химия", teacher: "Сидоров В.П.", classroom: "102", color: "text-green-400" },
+    { day: 4, time: 3, subject: "История", teacher: "Козлова М.Н.", classroom: "203", color: "text-orange-400" },
+    { day: 4, time: 4, subject: "География", teacher: "Федоров Д.А.", classroom: "204", color: "text-teal-400" },
+    { day: 4, time: 5, subject: "Литература", teacher: "Морозова Е.В.", classroom: "201", color: "text-pink-400" },
+    
+    // Saturday
+    { day: 5, time: 0, subject: "Биология", teacher: "Петрова А.С.", classroom: "103", color: "text-emerald-400" },
+    { day: 5, time: 1, subject: "Английский", teacher: "Морозова Е.В.", classroom: "206", color: "text-cyan-400" },
+    { day: 5, time: 2, subject: "Математика", teacher: "Иванов И.И.", classroom: "205", color: "text-blue-400" },
+    { day: 5, time: 3, subject: "Физика", teacher: "Петрова А.С.", classroom: "301", color: "text-purple-400" },
+    { day: 5, time: 4, subject: "Химия", teacher: "Сидоров В.П.", classroom: "102", color: "text-green-400" },
+    { day: 5, time: 5, subject: "История", teacher: "Козлова М.Н.", classroom: "203", color: "text-orange-400" },
   ];
 
   useEffect(() => {
@@ -87,19 +126,19 @@ const Stage3FinalSchedule = () => {
       </div>
 
       {/* Weekly schedule grid */}
-      <div className="grid grid-cols-6 gap-2 text-xs">
+      <div className="grid grid-cols-7 gap-2 text-xs">
         {/* Header row */}
         <div className="text-center font-medium text-stellar-accent p-2">
           Время
         </div>
-        {daysOfWeek.slice(0, 5).map((day, dayIndex) => (
+        {daysOfWeek.map((day, dayIndex) => (
           <div key={dayIndex} className="text-center font-medium text-stellar-accent p-2 glass-card">
             {day.slice(0, 3)}
           </div>
         ))}
 
         {/* Time slots and schedule */}
-        {timeSlotLabels.slice(0, 3).map((time, timeIndex) => (
+        {timeSlotLabels.map((time, timeIndex) => (
           <div key={timeIndex} className="contents">
             {/* Time label */}
             <div className="text-center p-2 glass-card text-stellar-accent font-medium flex items-center justify-center gap-1">
@@ -108,7 +147,7 @@ const Stage3FinalSchedule = () => {
             </div>
             
             {/* Schedule cells for each day */}
-            {daysOfWeek.slice(0, 5).map((_, dayIndex) => {
+            {daysOfWeek.map((_, dayIndex) => {
               const key = `${dayIndex}-${timeIndex}`;
               const cell = schedule[key];
               
@@ -146,20 +185,6 @@ const Stage3FinalSchedule = () => {
         ))}
       </div>
 
-      {/* Completion indicator */}
-      {buildingStep >= scheduleData.length && (
-        <div className="text-center animate-fade-in">
-          <div className="glass-card p-4 bg-stellar-primary/5 border-stellar-accent/30">
-            <div className="flex items-center justify-center gap-2 text-stellar-accent mb-2">
-              <CheckCircle2 className="w-5 h-5 animate-bounce" />
-              <span className="font-semibold">Расписание готово!</span>
-            </div>
-            <p className="text-sm text-text-secondary">
-              Все конфликты решены, расписание оптимизировано
-            </p>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

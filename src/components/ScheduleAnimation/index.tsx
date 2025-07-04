@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { Zap, Sparkles } from "lucide-react";
 import { scheduleSteps } from "./data";
-import AnimationControls from "./AnimationControls";
 import Stage0UnorganizedData from "./Stage0UnorganizedData";
 import Stage1Analysis from "./Stage1Analysis";
 import Stage2ConflictResolution from "./Stage2ConflictResolution";
@@ -9,16 +8,14 @@ import Stage3FinalSchedule from "./Stage3FinalSchedule";
 import StepIndicator from "./StepIndicator";
 const ScheduleAnimationSection = () => {
   const [activeStep, setActiveStep] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(true);
-  const [speed, setSpeed] = useState(1);
   const animationRef = useRef<HTMLDivElement>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const startAnimation = useCallback(() => {
     if (intervalRef.current) clearInterval(intervalRef.current);
     intervalRef.current = setInterval(() => {
       setActiveStep(prev => (prev + 1) % scheduleSteps.length);
-    }, scheduleSteps[activeStep]?.duration / speed || 3000 / speed);
-  }, [activeStep, speed]);
+    }, scheduleSteps[activeStep]?.duration || 3000);
+  }, [activeStep]);
   const stopAnimation = useCallback(() => {
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
@@ -26,19 +23,9 @@ const ScheduleAnimationSection = () => {
     }
   }, []);
   useEffect(() => {
-    if (isPlaying) {
-      startAnimation();
-    } else {
-      stopAnimation();
-    }
+    startAnimation();
     return () => stopAnimation();
-  }, [isPlaying, startAnimation, stopAnimation]);
-  const handlePlayPause = () => {
-    setIsPlaying(!isPlaying);
-  };
-  const handleSpeedChange = (newSpeed: number) => {
-    setSpeed(newSpeed);
-  };
+  }, [startAnimation, stopAnimation]);
   const handleStepChange = (step: number) => {
     setActiveStep(step);
   };
@@ -90,11 +77,6 @@ const ScheduleAnimationSection = () => {
               <span className="font-semibold">Экономия времени: до 20 часов в неделю</span>
             </div>
           </div>
-        </div>
-
-        {/* Animation Controls */}
-        <div className="mb-8">
-          <AnimationControls isPlaying={isPlaying} speed={speed} currentStep={activeStep} totalSteps={scheduleSteps.length} onPlayPause={handlePlayPause} onSpeedChange={handleSpeedChange} onStepChange={handleStepChange} />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
