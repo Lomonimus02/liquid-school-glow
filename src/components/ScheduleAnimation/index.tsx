@@ -7,51 +7,41 @@ import Stage1Analysis from "./Stage1Analysis";
 import Stage2ConflictResolution from "./Stage2ConflictResolution";
 import Stage3FinalSchedule from "./Stage3FinalSchedule";
 import StepIndicator from "./StepIndicator";
-
 const ScheduleAnimationSection = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
   const [speed, setSpeed] = useState(1);
   const animationRef = useRef<HTMLDivElement>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
-
   const startAnimation = useCallback(() => {
     if (intervalRef.current) clearInterval(intervalRef.current);
-    
     intervalRef.current = setInterval(() => {
       setActiveStep(prev => (prev + 1) % scheduleSteps.length);
     }, scheduleSteps[activeStep]?.duration / speed || 3000 / speed);
   }, [activeStep, speed]);
-
   const stopAnimation = useCallback(() => {
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
   }, []);
-
   useEffect(() => {
     if (isPlaying) {
       startAnimation();
     } else {
       stopAnimation();
     }
-
     return () => stopAnimation();
   }, [isPlaying, startAnimation, stopAnimation]);
-
   const handlePlayPause = () => {
     setIsPlaying(!isPlaying);
   };
-
   const handleSpeedChange = (newSpeed: number) => {
     setSpeed(newSpeed);
   };
-
   const handleStepChange = (step: number) => {
     setActiveStep(step);
   };
-
   const renderCurrentStage = () => {
     switch (activeStep) {
       case 0:
@@ -66,15 +56,13 @@ const ScheduleAnimationSection = () => {
         return <Stage0UnorganizedData />;
     }
   };
-
-  return (
-    <section className="py-24 px-4 relative overflow-hidden">
+  return <section className="py-24 px-4 relative overflow-hidden">
       {/* Animated background */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-stellar-accent/10 rounded-full blur-3xl animate-float"></div>
         <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-stellar-primary/10 rounded-full blur-3xl animate-float" style={{
-          animationDelay: '2s'
-        }}></div>
+        animationDelay: '2s'
+      }}></div>
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
@@ -106,15 +94,7 @@ const ScheduleAnimationSection = () => {
 
         {/* Animation Controls */}
         <div className="mb-8">
-          <AnimationControls
-            isPlaying={isPlaying}
-            speed={speed}
-            currentStep={activeStep}
-            totalSteps={scheduleSteps.length}
-            onPlayPause={handlePlayPause}
-            onSpeedChange={handleSpeedChange}
-            onStepChange={handleStepChange}
-          />
+          <AnimationControls isPlaying={isPlaying} speed={speed} currentStep={activeStep} totalSteps={scheduleSteps.length} onPlayPause={handlePlayPause} onSpeedChange={handleSpeedChange} onStepChange={handleStepChange} />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
@@ -132,12 +112,9 @@ const ScheduleAnimationSection = () => {
                   </span>
                 </div>
                 <div className="w-full bg-glass-secondary rounded-full h-2 overflow-hidden">
-                  <div 
-                    className="h-full liquid-gradient transition-all duration-1000 ease-out" 
-                    style={{
-                      width: `${(activeStep + 1) / scheduleSteps.length * 100}%`
-                    }} 
-                  />
+                  <div className="h-full liquid-gradient transition-all duration-1000 ease-out" style={{
+                  width: `${(activeStep + 1) / scheduleSteps.length * 100}%`
+                }} />
                 </div>
               </div>
             </div>
@@ -145,39 +122,13 @@ const ScheduleAnimationSection = () => {
 
           {/* Process steps */}
           <div className="space-y-8">
-            <StepIndicator
-              steps={scheduleSteps}
-              currentStep={activeStep}
-              onStepClick={handleStepChange}
-            />
+            <StepIndicator steps={scheduleSteps} currentStep={activeStep} onStepClick={handleStepChange} />
 
             {/* Benefits highlight */}
-            <div className="glass-card p-6 bg-stellar-primary/5 border-stellar-accent/30">
-              <h4 className="text-lg font-semibold text-stellar-accent mb-3">Ключевые преимущества:</h4>
-              <ul className="space-y-2 text-text-secondary">
-                <li className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-stellar-accent rounded-full" />
-                  Учет всех ограничений и пожеланий
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-stellar-accent rounded-full" />
-                  Автоматическое разрешение конфликтов
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-stellar-accent rounded-full" />
-                  Мгновенные изменения и корректировки
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-stellar-accent rounded-full" />
-                  Интеграция с календарными системами
-                </li>
-              </ul>
-            </div>
+            
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default ScheduleAnimationSection;
