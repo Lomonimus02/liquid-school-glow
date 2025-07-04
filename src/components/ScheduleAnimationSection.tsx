@@ -222,67 +222,67 @@ const ScheduleAnimationSection = () => {
           </div>
 
           {/* Process steps - Show only active step */}
-          <div className="min-h-[400px] flex items-center justify-center">
-            <div className="relative w-full max-w-md">
-              {scheduleSteps.map((step, index) => {
-                const IconComponent = step.icon;
-                const isActive = index === activeStep;
+          <div className="space-y-8">
+            <div className="min-h-[500px] flex items-center justify-center relative">
+              <div className="relative w-full max-w-lg">
+                {scheduleSteps.map((step, index) => {
+                  const IconComponent = step.icon;
+                  const isActive = index === activeStep;
 
-                return (
-                  <div
-                    key={index}
-                    className={`absolute inset-0 glass-card p-8 transition-all duration-700 ease-in-out overflow-hidden ${
-                      isActive 
-                        ? 'opacity-100 scale-100 ring-2 ring-stellar-accent/50 glow-effect translate-y-0' 
-                        : 'opacity-0 scale-95 translate-y-4 pointer-events-none'
-                    }`}
-                    style={{
-                      transitionDelay: isActive ? '0ms' : '100ms'
-                    }}
-                  >
-                    {/* Shimmer effect for active step */}
-                    {isActive && (
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-stellar-accent/20 to-transparent transform -skew-x-12 animate-shimmer"></div>
-                    )}
-                    
-                    <div className="flex flex-col items-center text-center space-y-6 relative z-10">
-                      <div className="w-16 h-16 rounded-3xl flex items-center justify-center bg-stellar-primary/30 animate-pulse-glow">
-                        <IconComponent className={`w-8 h-8 ${step.color} animate-bounce-gentle`} />
-                      </div>
+                  return (
+                    <div
+                      key={index}
+                      className={`absolute inset-0 glass-card p-8 transition-all duration-700 ease-in-out overflow-visible ${
+                        isActive 
+                          ? 'opacity-100 scale-100 ring-2 ring-stellar-accent/50 glow-effect translate-y-0' 
+                          : 'opacity-0 scale-95 translate-y-4 pointer-events-none'
+                      }`}
+                      style={{
+                        transitionDelay: isActive ? '0ms' : '100ms'
+                      }}
+                    >
+                      {/* Shimmer effect for active step */}
+                      {isActive && (
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-stellar-accent/20 to-transparent transform -skew-x-12 animate-shimmer"></div>
+                      )}
                       
-                      <div className="space-y-4">
-                        <h3 className="text-2xl font-bold text-stellar-accent">
-                          {step.title}
-                        </h3>
-                        <p className="text-text-secondary text-lg leading-relaxed">
-                          {step.description}
-                        </p>
-                      </div>
+                      <div className="flex flex-col items-center text-center space-y-6 relative z-10">
+                        <div className="w-16 h-16 rounded-3xl flex items-center justify-center bg-stellar-primary/30 animate-pulse-glow">
+                          <IconComponent className={`w-8 h-8 ${step.color} animate-bounce-gentle`} />
+                        </div>
+                        
+                        <div className="space-y-4">
+                          <h3 className="text-2xl font-bold text-stellar-accent">
+                            {step.title}
+                          </h3>
+                          <p className="text-text-secondary text-lg leading-relaxed">
+                            {step.description}
+                          </p>
+                        </div>
 
-                      {/* Step indicator */}
-                      <div className="flex space-x-2">
-                        {scheduleSteps.map((_, stepIndex) => (
-                          <div
-                            key={stepIndex}
-                            className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                              stepIndex === activeStep
-                                ? 'bg-stellar-accent scale-125'
-                                : stepIndex < activeStep
-                                ? 'bg-stellar-accent/60'
-                                : 'bg-glass-border'
-                            }`}
-                          />
-                        ))}
+                        {/* Step indicator */}
+                        <div className="flex space-x-2">
+                          {scheduleSteps.map((_, stepIndex) => (
+                            <div
+                              key={stepIndex}
+                              className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                                stepIndex === activeStep
+                                  ? 'bg-stellar-accent scale-125'
+                                  : stepIndex < activeStep
+                                  ? 'bg-stellar-accent/60'
+                                  : 'bg-glass-border'
+                              }`}
+                            />
+                          ))}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
-          </div>
 
-          {/* Benefits highlight */}
-          <div className="mt-8">
+            {/* Benefits highlight */}
             <div className="glass-card p-6 bg-stellar-primary/5 border-stellar-accent/30">
               <h4 className="text-lg font-semibold text-stellar-accent mb-3">Ключевые преимущества:</h4>
               <ul className="space-y-2 text-text-secondary">
