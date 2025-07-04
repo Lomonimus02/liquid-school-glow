@@ -2,7 +2,7 @@ import InteractiveBackground from "@/components/InteractiveBackground";
 import Navigation from "@/components/Navigation";
 import HeroSection from "@/components/HeroSection";
 import FeaturesSection from "@/components/FeaturesSection";
-import ScheduleAnimationSection from "@/components/ScheduleAnimationSection";
+import ScheduleAnimationSection from "@/components/ScheduleAnimation";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 
