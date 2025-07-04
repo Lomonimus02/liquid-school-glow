@@ -50,14 +50,13 @@ const InteractiveBackground = () => {
     vx: number;
     vy: number;
     size: number;
-    opacity: number;
+    baseOpacity: number; // Base opacity of the particle
     color: string;
     originalX: number;
     originalY: number;
-    hoverIntensity: number;
+    currentHoverIntensity: number; // Unified hover intensity
   }>>([]);
-  const connectionOpacities = useRef<Map<string, number>>(new Map());
-  const connectionHoverStates = useRef<Map<string, number>>(new Map());
+  // connectionOpacities and connectionHoverStates are removed as their logic will be unified.
   const animationTime = useRef(0);
 
   useEffect(() => {
@@ -82,13 +81,13 @@ const InteractiveBackground = () => {
     // Initialize constellation stars in a chaotic irregular grid
     const initParticles = () => {
       particles.current = [];
-      connectionOpacities.current.clear();
-      connectionHoverStates.current.clear();
+      // connectionOpacities.current.clear(); // Removed
+      // connectionHoverStates.current.clear(); // Removed
       const particleCount = 75;
 
       // Create irregular grid with random variations
-      const baseRows = 6;
-      const baseCols = 10;
+      const baseRows = 8; // Increased for better initial distribution
+      const baseCols = 10; // Adjusted for particleCount
 
       for (let i = 0; i < particleCount; i++) {
         // Create base grid position with chaos
@@ -103,8 +102,13 @@ const InteractiveBackground = () => {
         const chaosX = (Math.random() - 0.5) * (canvas.width / baseCols) * 1.5;
         const chaosY = (Math.random() - 0.5) * (canvas.height / baseRows) * 1.5;
 
-        const finalX = Math.max(50, Math.min(canvas.width - 50, baseX + chaosX));
-        const finalY = Math.max(50, Math.min(canvas.height - 50, baseY + chaosY));
+        const padding = 5; // Значительно уменьшенный отступ от краев
+        let calculatedX = baseX + chaosX;
+        let calculatedY = baseY + chaosY;
+
+        // Гарантируем, что частицы остаются в пределах холста, но с минимальным отступом
+        const finalX = Math.max(padding, Math.min(canvas.width - padding, calculatedX));
+        const finalY = Math.max(padding, Math.min(canvas.height - padding, calculatedY));
 
         particles.current.push({
           x: finalX,
@@ -112,11 +116,11 @@ const InteractiveBackground = () => {
           vx: 0,
           vy: 0,
           size: Math.random() * 2 + 1,
-          opacity: Math.random() * 0.6 + 0.3,
+          baseOpacity: Math.random() * 0.4 + 0.2, // Adjusted for potentially more subtle base stars
           color: `hsl(162, ${Math.random() * 40 + 60}%, ${Math.random() * 20 + 70}%)`,
           originalX: finalX,
           originalY: finalY,
-          hoverIntensity: 0
+          currentHoverIntensity: 0
         });
       }
     };
@@ -129,149 +133,112 @@ const InteractiveBackground = () => {
       particles.current.forEach((particle, index) => {
         // Calculate current mouse distance to particle
         const dx = mousePos.current.x - particle.x;
-        const dy = mousePos.current.y - particle.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
+        const dxMouse = mousePos.current.x - particle.x;
+        const dyMouse = mousePos.current.y - particle.y;
+        const distanceMouseParticle = Math.sqrt(dxMouse * dxMouse + dyMouse * dyMouse);
 
-        // Update hover intensity with smooth transitions - reduced particle influence
-        const targetHoverIntensity = distance < 150 ? (150 - distance) / 150 : 0;
-        particle.hoverIntensity += (targetHoverIntensity - particle.hoverIntensity) * 0.06;
+        // Calculate target hover intensity based on mouse proximity to the particle
+        // This will be the base for this particle's and its connections' hover effect
+        const targetParticleHoverIntensity = distanceMouseParticle < 150 ? (150 - distanceMouseParticle) / 150 : 0;
 
-        // Mouse interaction - create smooth stretching effect
-        if (particle.hoverIntensity > 0.01) {
-          // Simple smooth stretching towards mouse
-          const stretchForce = particle.hoverIntensity * 0.2;
-          const targetX = particle.originalX + dx * stretchForce;
-          const targetY = particle.originalY + dy * stretchForce;
+        // Smoothly update the particle's current hover intensity
+        particle.currentHoverIntensity += (targetParticleHoverIntensity - particle.currentHoverIntensity) * 0.08; // Slightly faster reaction
 
-          // Very smooth interpolation
-          particle.x += (targetX - particle.x) * 0.06;
-          particle.y += (targetY - particle.y) * 0.06;
+        // Mouse interaction for particle displacement
+        if (particle.currentHoverIntensity > 0.01) {
+          const stretchForce = particle.currentHoverIntensity * 0.25; // Can adjust force
+          const targetX = particle.originalX + dxMouse * stretchForce;
+          const targetY = particle.originalY + dyMouse * stretchForce;
 
-          // Only brightness changes, no size changes
-          particle.opacity = Math.min(1, particle.opacity + 0.02);
+          particle.x += (targetX - particle.x) * 0.07; // Smooth interpolation for position
+          particle.y += (targetY - particle.y) * 0.07;
         } else {
           // Return to original position smoothly
-          particle.x += (particle.originalX - particle.x) * 0.04;
-          particle.y += (particle.originalY - particle.y) * 0.04;
-
-          // Fade back to normal
-          particle.opacity = Math.max(0.3, particle.opacity - 0.01);
+          particle.x += (particle.originalX - particle.x) * 0.03; // Более плавный возврат
+          particle.y += (particle.originalY - particle.y) * 0.03; // Более плавный возврат
         }
+
+        // Determine particle opacity based on its hover intensity
+        const currentParticleOpacity = Math.min(1, particle.baseOpacity + particle.currentHoverIntensity * 0.7);
 
         // Draw star
         ctx.beginPath();
         ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
         ctx.fillStyle = particle.color;
-        ctx.globalAlpha = particle.opacity;
+        ctx.globalAlpha = currentParticleOpacity;
         ctx.fill();
 
-        // Add subtle glow effect for stars near mouse
-        if (particle.hoverIntensity > 0.1) {
+        // Add glow effect for stars if hovered
+        if (particle.currentHoverIntensity > 0.1) {
           ctx.beginPath();
-          ctx.arc(particle.x, particle.y, particle.size * 2.5, 0, Math.PI * 2);
+          ctx.arc(particle.x, particle.y, particle.size * 2.5 + particle.currentHoverIntensity * 2, 0, Math.PI * 2); // Glow size increases with hover
           ctx.fillStyle = particle.color;
-          ctx.globalAlpha = 0.1 * particle.hoverIntensity;
+          ctx.globalAlpha = 0.15 * particle.currentHoverIntensity; // Glow opacity increases with hover
           ctx.fill();
         }
+      });
 
-        // Draw dynamic constellation connections
-        particles.current.slice(index + 1).forEach((otherParticle, otherIndex) => {
+
+      // Draw dynamic constellation connections (Second pass, after all particles updated)
+      particles.current.forEach((particle, index) => {
+        particles.current.slice(index + 1).forEach((otherParticle) => {
           const dx2 = particle.x - otherParticle.x;
           const dy2 = particle.y - otherParticle.y;
           const distance2 = Math.sqrt(dx2 * dx2 + dy2 * dy2);
 
-          // Increased connection range for more connections
-          if (distance2 < 180) {
-            // Create unique connection ID
-            const connectionId = `${index}-${index + otherIndex + 1}`;
-
-            // Dynamic connection opacity with breathing effect
-            const breathingEffect = Math.sin(animationTime.current * 0.8 + index * 0.5) * 0.15 + 0.85;
-            const randomFlicker = Math.sin(animationTime.current * 1.2 + connectionId.length) * 0.1 + 0.9;
-
-            // Base line opacity with dynamic effects - increased base visibility
-            const baseLineOpacity = 0.4 * (1 - distance2 / 180) * breathingEffect * randomFlicker;
-
-            // Calculate hover effect - prioritize line-based interaction
-            const lineHoverIntensity = calculateLineHoverIntensity(
+          const connectionRange = 180;
+          if (distance2 < connectionRange) {
+            // Determine hover intensity for the line.
+            // It's primarily influenced by the most hovered of its two particles.
+            // Also, consider direct mouse-to-line hover.
+            const lineDirectHoverIntensity = calculateLineHoverIntensity(
               mousePos.current.x, mousePos.current.y,
               particle.x, particle.y,
               otherParticle.x, otherParticle.y
             );
 
-            // Particle-based hover with reduced influence
-            const combinedHoverIntensity = Math.max(particle.hoverIntensity, otherParticle.hoverIntensity) * 0.6;
+            // The line's hover intensity is the max of its particles' hover or direct line hover
+            const lineEffectiveHoverIntensity = Math.max(
+              particle.currentHoverIntensity,
+              otherParticle.currentHoverIntensity,
+              lineDirectHoverIntensity * 1.2 // Give direct line hover a slight boost
+            );
 
-            // Prioritize line hover over particle hover
-            const finalHoverIntensity = Math.max(lineHoverIntensity, combinedHoverIntensity);
+            // Base line opacity: always visible if particles are close, slightly dimmer for distant ones
+            // No breathing/flicker for simplicity and to meet new requirements.
+            const baseLineOpacity = 0.3 * (1 - distance2 / connectionRange); // Softer base
 
-            // Get or initialize connection hover state
-            if (!connectionHoverStates.current.has(connectionId)) {
-              connectionHoverStates.current.set(connectionId, 0);
-            }
+            // Final line opacity: base + boost from hover
+            const finalLineOpacity = Math.min(0.9, baseLineOpacity + lineEffectiveHoverIntensity * 0.7);
 
-            const currentHoverState = connectionHoverStates.current.get(connectionId) || 0;
-            const targetHoverState = finalHoverIntensity;
+            // Line width: base + boost from hover
+            const baseLineWidth = 0.8; // Thinner base lines for a cleaner look
+            const finalLineWidth = baseLineWidth + lineEffectiveHoverIntensity * 0.4; // Еще уменьшено влияние наведения на толщину
 
-            // Smooth hover state transition
-            const newHoverState = currentHoverState + (targetHoverState - currentHoverState) * 0.1;
-            connectionHoverStates.current.set(connectionId, newHoverState);
-
-            // Get or initialize connection opacity for smooth transitions
-            if (!connectionOpacities.current.has(connectionId)) {
-              connectionOpacities.current.set(connectionId, baseLineOpacity);
-            }
-
-            const currentOpacity = connectionOpacities.current.get(connectionId) || 0;
-
-            // Target opacity with responsive enhancement - much stronger boost for lines
-            const hoverBoost = newHoverState * 0.8; // Doubled hover boost
-            const targetOpacity = Math.min(0.95, baseLineOpacity + hoverBoost); // Higher max opacity
-
-            // Smooth interpolation for opacity changes
-            const lerpSpeed = 0.08; // Even more responsive
-            const newOpacity = currentOpacity + (targetOpacity - currentOpacity) * lerpSpeed;
-            connectionOpacities.current.set(connectionId, newOpacity);
-
-            // Line width with responsive hover effect - more dramatic
-            const baseLineWidth = 1.2; // Thicker base lines
-            const lineWidth = baseLineWidth + newHoverState * 2.5; // More dramatic width change
-
-            // Only draw if opacity is significant
-            if (newOpacity > 0.03) { // Lower threshold for more visible lines
-              // Draw the main line
+            if (finalLineOpacity > 0.02) { // Draw if reasonably visible
               ctx.beginPath();
               ctx.moveTo(particle.x, particle.y);
               ctx.lineTo(otherParticle.x, otherParticle.y);
-              ctx.strokeStyle = `rgba(2, 191, 122, ${newOpacity})`;
-              ctx.lineWidth = lineWidth;
+              ctx.strokeStyle = `rgba(2, 191, 122, ${finalLineOpacity})`;
+              ctx.lineWidth = finalLineWidth;
               ctx.stroke();
 
-              // Add glow effect for lines with any hover (more prominent)
-              if (newHoverState > 0.1) {
-                ctx.beginPath();
-                ctx.moveTo(particle.x, particle.y);
-                ctx.lineTo(otherParticle.x, otherParticle.y);
-                ctx.strokeStyle = `rgba(2, 191, 122, ${newHoverState * 0.4})`;
-                ctx.lineWidth = lineWidth + 4;
-                ctx.stroke();
-              }
-
-              // Add extra bright glow for strong hover
-              if (newHoverState > 0.5) {
-                ctx.beginPath();
-                ctx.moveTo(particle.x, particle.y);
-                ctx.lineTo(otherParticle.x, otherParticle.y);
-                ctx.strokeStyle = `rgba(2, 191, 122, ${newHoverState * 0.3})`;
-                ctx.lineWidth = lineWidth + 8;
-                ctx.stroke();
-              }
+              // Add glow effect for lines if hovered (sync with particle glow logic) - REMOVED
+              // if (lineEffectiveHoverIntensity > 0.1) {
+              //   ctx.beginPath();
+              //   ctx.moveTo(particle.x, particle.y);
+              //   ctx.lineTo(otherParticle.x, otherParticle.y);
+              //   // Glow opacity and width also scale with hover intensity
+              //   ctx.strokeStyle = `rgba(2, 191, 122, ${lineEffectiveHoverIntensity * 0.3})`;
+              //   ctx.lineWidth = finalLineWidth + 2 + lineEffectiveHoverIntensity * 3;
+              //   ctx.stroke();
+              // }
             }
           }
         });
       });
 
-      ctx.globalAlpha = 1;
+      ctx.globalAlpha = 1; // Reset global alpha
       requestAnimationFrame(animate);
     };
 
