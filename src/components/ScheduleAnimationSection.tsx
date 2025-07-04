@@ -82,53 +82,129 @@ const ScheduleAnimationSection = () => {
           {/* Animation visualization */}
           <div className="relative">
             <div ref={animationRef} className="glass-card p-8 min-h-[500px] relative overflow-hidden">
-              {/* Schedule grid animation */}
-              <div className="grid grid-cols-6 gap-2 mb-6">
-                {timeSlots.map((time, timeIndex) => (
-                  <div key={timeIndex} className="space-y-2">
-                    <div className="text-xs text-stellar-accent font-medium text-center p-2 glass-card">
-                      {time}
+              {/* Stage 0: Unorganized list */}
+              {activeStep === 0 && (
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold text-stellar-accent mb-4 text-center">
+                    Неорганизованные данные
+                  </h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <h4 className="text-sm font-medium text-text-secondary">Учителя:</h4>
+                      {["Иванов И.И.", "Петрова А.С.", "Сидоров В.П.", "Козлова М.Н.", "Федоров Д.А."].map((teacher, i) => (
+                        <div key={i} className="p-2 bg-glass-secondary border border-glass-border rounded-xl text-xs animate-fade-in" 
+                             style={{ animationDelay: `${i * 0.1}s` }}>
+                          {teacher}
+                        </div>
+                      ))}
                     </div>
-                    {subjects.map((subject, subjectIndex) => {
-                      const isActive = (timeIndex + subjectIndex + activeStep) % 4 === 0;
-                      return (
-                        <div
-                          key={`${timeIndex}-${subjectIndex}`}
-                          className={`p-2 rounded-xl text-xs text-center transition-all duration-500 ${
-                            isActive 
-                              ? 'bg-stellar-primary/30 border border-stellar-accent text-stellar-accent transform scale-105 glow-effect' 
-                              : 'bg-glass-secondary border border-glass-border text-text-muted'
-                          }`}
-                          style={{ 
-                            animationDelay: `${(timeIndex + subjectIndex) * 0.1}s`,
-                            transform: isActive ? 'scale(1.05) translateY(-2px)' : 'scale(1)'
-                          }}
-                        >
+                    <div className="space-y-2">
+                      <h4 className="text-sm font-medium text-text-secondary">Предметы:</h4>
+                      {subjects.map((subject, i) => (
+                        <div key={i} className="p-2 bg-glass-secondary border border-glass-border rounded-xl text-xs animate-fade-in"
+                             style={{ animationDelay: `${(i + 5) * 0.1}s` }}>
                           {subject}
                         </div>
-                      );
-                    })}
+                      ))}
+                    </div>
                   </div>
-                ))}
-              </div>
+                </div>
+              )}
 
-              {/* Flowing animation elements */}
-              <div className="absolute inset-0 pointer-events-none">
-                {[...Array(8)].map((_, i) => (
-                  <div
-                    key={i}
-                    className="absolute w-2 h-2 bg-stellar-accent rounded-full animate-schedule-flow opacity-60"
-                    style={{
-                      top: `${Math.random() * 80 + 10}%`,
-                      animationDelay: `${i * 0.5}s`,
-                      animationDuration: `${3 + Math.random() * 2}s`
-                    }}
-                  />
-                ))}
-              </div>
+              {/* Stage 1: Analysis */}
+              {activeStep === 1 && (
+                <div className="flex flex-col items-center justify-center h-full space-y-6">
+                  <div className="relative">
+                    <div className="w-24 h-24 border-4 border-stellar-accent/30 border-t-stellar-accent rounded-full animate-spin"></div>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <Users className="w-8 h-8 text-stellar-accent animate-pulse" />
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <h3 className="text-lg font-semibold text-stellar-accent mb-2">Анализ данных</h3>
+                    <p className="text-sm text-text-secondary">ИИ анализирует ограничения и оптимизирует распределение</p>
+                  </div>
+                  {/* Flowing data particles */}
+                  <div className="absolute inset-0 pointer-events-none">
+                    {[...Array(12)].map((_, i) => (
+                      <div
+                        key={i}
+                        className="absolute w-2 h-2 bg-stellar-accent rounded-full opacity-60 animate-schedule-flow"
+                        style={{
+                          top: `${Math.random() * 80 + 10}%`,
+                          left: `${Math.random() * 80 + 10}%`,
+                          animationDelay: `${i * 0.2}s`,
+                          animationDuration: `2s`
+                        }}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Stage 2: Conflict Resolution */}
+              {activeStep === 2 && (
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold text-stellar-accent mb-4 text-center">
+                    Проверка конфликтов
+                  </h3>
+                  <div className="grid grid-cols-3 gap-3">
+                    {[
+                      { time: "09:00", subject: "Математика", teacher: "Иванов И.И.", conflict: false },
+                      { time: "09:00", subject: "Физика", teacher: "Иванов И.И.", conflict: true },
+                      { time: "10:00", subject: "Химия", teacher: "Петрова А.С.", conflict: false },
+                      { time: "10:00", subject: "История", teacher: "Сидоров В.П.", conflict: false },
+                      { time: "11:00", subject: "География", teacher: "Козлова М.Н.", conflict: false },
+                      { time: "11:00", subject: "Литература", teacher: "Федоров Д.А.", conflict: false }
+                    ].map((item, i) => (
+                      <div key={i} className={`p-3 rounded-xl text-xs transition-all duration-500 ${
+                        item.conflict 
+                          ? 'bg-destructive/20 border border-destructive/50 text-destructive animate-pulse' 
+                          : 'bg-stellar-primary/20 border border-stellar-accent/50 text-stellar-accent'
+                      }`}>
+                        <div className="font-medium">{item.time}</div>
+                        <div className="text-[10px] opacity-80">{item.subject}</div>
+                        <div className="text-[10px] opacity-60">{item.teacher}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Stage 3: Final Schedule */}
+              {activeStep === 3 && (
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold text-stellar-accent mb-4 text-center">
+                    Готовое расписание
+                  </h3>
+                  <div className="grid grid-cols-6 gap-2">
+                    {timeSlots.map((time, timeIndex) => (
+                      <div key={timeIndex} className="space-y-2">
+                        <div className="text-xs text-stellar-accent font-medium text-center p-2 glass-card glow-effect">
+                          {time}
+                        </div>
+                        {subjects.slice(0, 3).map((subject, subjectIndex) => (
+                          <div
+                            key={`${timeIndex}-${subjectIndex}`}
+                            className="p-2 rounded-xl text-xs text-center bg-stellar-primary/30 border border-stellar-accent text-stellar-accent transform animate-scale-in glow-effect"
+                            style={{ 
+                              animationDelay: `${(timeIndex + subjectIndex) * 0.1}s`
+                            }}
+                          >
+                            <div className="font-medium">{subject}</div>
+                            <div className="text-[10px] opacity-80">
+                              {["Иванов И.И.", "Петрова А.С.", "Сидоров В.П."][subjectIndex]}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* Progress indicator */}
-              <div className="mt-6">
+              <div className="absolute bottom-4 left-4 right-4">
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-sm text-text-secondary">Прогресс создания</span>
                   <span className="text-sm font-semibold text-stellar-accent">
