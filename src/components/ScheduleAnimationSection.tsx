@@ -78,7 +78,7 @@ const ScheduleAnimationSection = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
           {/* Animation visualization */}
           <div className="relative">
             <div ref={animationRef} className="glass-card p-8 min-h-[500px] relative overflow-hidden">
@@ -223,8 +223,8 @@ const ScheduleAnimationSection = () => {
 
           {/* Process steps - Show only active step */}
           <div className="space-y-8">
-            <div className="min-h-[500px] flex items-center justify-center relative">
-              <div className="relative w-full max-w-lg">
+            <div className="min-h-[400px] flex items-center justify-center relative">
+              <div className="relative w-full">
                 {scheduleSteps.map((step, index) => {
                   const IconComponent = step.icon;
                   const isActive = index === activeStep;
@@ -232,14 +232,11 @@ const ScheduleAnimationSection = () => {
                   return (
                     <div
                       key={index}
-                      className={`absolute inset-0 glass-card p-8 transition-all duration-700 ease-in-out overflow-visible ${
+                      className={`glass-card p-8 transition-all duration-700 ease-in-out ${
                         isActive 
-                          ? 'opacity-100 scale-100 ring-2 ring-stellar-accent/50 glow-effect translate-y-0' 
-                          : 'opacity-0 scale-95 translate-y-4 pointer-events-none'
+                          ? 'opacity-100 scale-100 ring-2 ring-stellar-accent/50 glow-effect' 
+                          : 'opacity-0 scale-95 pointer-events-none absolute inset-0'
                       }`}
-                      style={{
-                        transitionDelay: isActive ? '0ms' : '100ms'
-                      }}
                     >
                       {/* Shimmer effect for active step */}
                       {isActive && (
