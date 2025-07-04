@@ -211,8 +211,6 @@ const ScheduleAnimationSection = () => {
                 const IconComponent = step.icon;
                 const isActive = index === activeStep;
                 return <div key={index} className={`glass-card p-8 transition-all duration-700 ease-in-out ${isActive ? 'opacity-100 scale-100 ring-2 ring-stellar-accent/50 glow-effect' : 'opacity-0 scale-95 pointer-events-none absolute inset-0'}`}>
-                      {/* Shimmer effect for active step */}
-                      {isActive && <div className="absolute inset-0 bg-gradient-to-r from-transparent via-stellar-accent/20 to-transparent transform -skew-x-12 animate-shimmer"></div>}
                       
                       <div className="flex flex-col items-center text-center space-y-6 relative z-10">
                         <div className="w-16 h-16 rounded-3xl flex items-center justify-center bg-stellar-primary/30 animate-pulse-glow">
